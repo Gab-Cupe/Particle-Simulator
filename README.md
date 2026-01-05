@@ -1,5 +1,6 @@
 # Particle-Simulator
-**Particle-Simulator** is a real-time particle simulation and visualization engine built with **React** and **Three.js**. It allows users to define complex trajectories through the dynamic evaluation of mathematical formulas , visualizing force vectors and kinetic trails in a high-performance 3D environment.
+
+**Particle-Simulator** is a real-time particle simulation and visualization engine built with **React** and **Three.js**. It allows users to define complex trajectories through the dynamic evaluation of mathematical formulas, visualizing force vectors and kinetic trails in a high-performance 3D environment.
 
 ---
 
@@ -15,15 +16,15 @@ If the exam was a torture, this simulator is the answer. **Thanks for nothing, S
 
 ## How to use
 
-1. **Define the body:** Set the initial position  and the mass of your particle.
-2. **Add the chaos:** Assign forces in the form of functions (e.g., `-x * cos(t)`) or use the kinematic mode to define position equations directly.
+1. **Define the body:** Set the initial position and the mass of your particle.
+2. **Add the chaos:** Assign forces in the form of functions or use the kinematic mode to define position equations directly.
 3. **Simulate:** Click **START** and watch physics finally make sense.
 
 ---
 
 ## Syntax and Functions Guide
 
-The engine uses a dynamic evaluation system that supports the following variables and mathematical functions. You can use them in the **Forces (N)** or **Functions f(t)** fields.
+The engine uses a dynamic evaluation system that supports the following variables and a wide array of mathematical functions from the JavaScript `Math` library. You can use them in the **Forces (N)** or **Functions f(t)** fields.
 
 ### Available Variables
 
@@ -34,31 +35,38 @@ The engine uses a dynamic evaluation system that supports the following variable
 
 ### Mathematical Functions
 
-Functions must be written in lowercase:
+The simulator now supports the full standard `Math` library suite. All functions must be written in lowercase:
 
-| Function | Syntax | Example |
+| Category | Functions | Example |
 | --- | --- | --- |
-| **Sine** | `sin(n)` | `10 * sin(t)` |
-| **Cosine** | `cos(n)` | `-x * cos(t)` |
-| **Tangent** | `tan(n)` | `tan(t * 0.5)` |
-| **Square Root** | `sqrt(n)` | `sqrt(x^2 + y^2)` |
-| **Power** | `^` or `**` | `x^2` or `x**2` |
-| **Exponential** | `exp(n)` | `exp(-t)` |
-| **Pi** | `PI` | `sin(t * PI)` |
+| **Trigonometry** | `sin(n)`, `cos(n)`, `tan(n)`, `atan2(y, x)` | `10 * sin(t)` |
+| **Hyperbolic** | `sinh(n)`, `cosh(n)`, `tanh(n)` | `20 * tanh(sin(t))` |
+| **Logs & Power** | `sqrt(n)`, `log(n)`, `log10(n)`, `^` or `**` | `log(t + 1)` |
+| **Utility** | `abs(n)`, `floor(n)`, `ceil(n)`, `round(n)` | `abs(x)` |
+| **Advanced** | `min(a, b)`, `max(a, b)`, `random()`, `sign(n)` | `max(x, y)` |
+
+### Mathematical Constants
+
+| Constant | Description | Value (Approx) |
+| --- | --- | --- |
+| `PI` | Ratio of circle circumference to diameter | **3.14159** |
+| `E` | Base of natural logarithms | **2.718** |
+| `SQRT2` | Square root of 2 | **1.414** |
 
 ### Pro Formula Examples:
 
-* **Central Attraction:** `Fx: -x`, `Fy: -y`
-* **Spiral Vortex:** `Fx: -y * 2`, `Fy: x * 2`
-* **Damped Wave:** `sin(t) * exp(-t * 0.1)`
-* **Inverse-square Gravity:** `-x / (sqrt(x^2 + y^2)^3)`
+* **Lissajous Resonance:** `Fx: -x`, `Fy: -2.25 * y`, `Fz: sin(t * 0.5) * 5`.
+* **Hyperbolic Damping:** `Fz: -z * 0.5 + 20 * tanh(sin(t))`.
+* **Pulsing Vortex:** `Fx: -x * abs(cos(t*0.2))`, `Fy: -y * abs(cos(t*0.2))`.
+* **Inverse-square Gravity:** `-x / (sqrt(x^2 + y^2 + z^2)^3)`.
 
 ---
 
 ## Technical Optimization
 
-Unlike other simulators that suffer from memory leaks, this engine implements:
+Unlike other simulators that suffer from memory leaks and performance drops, this engine implements:
 
-* **Function Caching:** Formulas are compiled only once into executable functions.
-* **Direct-Ref Manipulation:** Real-time position updates are performed directly on the Three.js mesh references, bypassing the React render cycle to maintain stable RAM usage and high FPS.
+* **Advanced Function Caching:** Mathematical strings are transformed into executable functions once and cached to avoid the overhead of constant re-parsing.
+* **Math Object Injection:** The engine automatically injects the entire JavaScript `Math` context into your formulas, allowing for complex scientific calculations without syntax errors.
+* **Direct-Ref Manipulation:** Real-time position updates are performed directly on the Three.js mesh references. This bypasses the React render cycle, maintaining stable RAM usage and high FPS even with 100+ particles.
 
