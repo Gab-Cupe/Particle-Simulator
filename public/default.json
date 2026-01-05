@@ -1,0 +1,93 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-05T19:30:00.000Z",
+  "settings": {
+    "gravity": true,
+    "friction": 0.0,
+    "deltaT": 0.076,
+    "path": false,
+    "axes": false
+  },
+  "particulas": [
+    {
+      "id": 9001, "color": "#ff00ff", "mass": 5, "p0_fis": [20, 0, 0], "v0_fis": [0, 8, 0],
+      "forces": [{"id": 1, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 0.31))"]}]
+    },
+    {
+      "id": 9002, "color": "#e600ff", "mass": 5, "p0_fis": [19.02, 6.18, 0], "v0_fis": [-2, 8, 0],
+      "forces": [{"id": 2, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 0.62))"]}]
+    },
+    {
+      "id": 9003, "color": "#cc00ff", "mass": 5, "p0_fis": [16.18, 11.76, 0], "v0_fis": [-4, 7, 0],
+      "forces": [{"id": 3, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 0.94))"]}]
+    },
+    {
+      "id": 9004, "color": "#b300ff", "mass": 5, "p0_fis": [11.76, 16.18, 0], "v0_fis": [-6, 6, 0],
+      "forces": [{"id": 4, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 1.25))"]}]
+    },
+    {
+      "id": 9005, "color": "#9900ff", "mass": 5, "p0_fis": [6.18, 19.02, 0], "v0_fis": [-8, 4, 0],
+      "forces": [{"id": 5, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 1.57))"]}]
+    },
+    {
+      "id": 9006, "color": "#8000ff", "mass": 5, "p0_fis": [0, 20, 0], "v0_fis": [-8, 0, 0],
+      "forces": [{"id": 6, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 1.88))"]}]
+    },
+    {
+      "id": 9007, "color": "#6600ff", "mass": 5, "p0_fis": [-6.18, 19.02, 0], "v0_fis": [-8, -4, 0],
+      "forces": [{"id": 7, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 2.19))"]}]
+    },
+    {
+      "id": 9008, "color": "#4d00ff", "mass": 5, "p0_fis": [-11.76, 16.18, 0], "v0_fis": [-6, -6, 0],
+      "forces": [{"id": 8, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 2.51))"]}]
+    },
+    {
+      "id": 9009, "color": "#3300ff", "mass": 5, "p0_fis": [-16.18, 11.76, 0], "v0_fis": [-4, -7, 0],
+      "forces": [{"id": 9, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 2.82))"]}]
+    },
+    {
+      "id": 9010, "color": "#1a00ff", "mass": 5, "p0_fis": [-19.02, 6.18, 0], "v0_fis": [-2, -8, 0],
+      "forces": [{"id": 10, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 3.14))"]}]
+    },
+    {
+      "id": 9011, "color": "#0000ff", "mass": 5, "p0_fis": [-20, 0, 0], "v0_fis": [0, -8, 0],
+      "forces": [{"id": 11, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 3.45))"]}]
+    },
+    {
+      "id": 9012, "color": "#001aff", "mass": 5, "p0_fis": [-19.02, -6.18, 0], "v0_fis": [2, -8, 0],
+      "forces": [{"id": 12, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 3.76))"]}]
+    },
+    {
+      "id": 9013, "color": "#0033ff", "mass": 5, "p0_fis": [-16.18, -11.76, 0], "v0_fis": [4, -7, 0],
+      "forces": [{"id": 13, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 4.08))"]}]
+    },
+    {
+      "id": 9014, "color": "#004dff", "mass": 5, "p0_fis": [-11.76, -16.18, 0], "v0_fis": [6, -6, 0],
+      "forces": [{"id": 14, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 4.39))"]}]
+    },
+    {
+      "id": 9015, "color": "#0066ff", "mass": 5, "p0_fis": [-6.18, -19.02, 0], "v0_fis": [8, -4, 0],
+      "forces": [{"id": 15, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 4.71))"]}]
+    },
+    {
+      "id": 9016, "color": "#0080ff", "mass": 5, "p0_fis": [0, -20, 0], "v0_fis": [8, 0, 0],
+      "forces": [{"id": 16, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 5.02))"]}]
+    },
+    {
+      "id": 9017, "color": "#0099ff", "mass": 5, "p0_fis": [6.18, -19.02, 0], "v0_fis": [8, 4, 0],
+      "forces": [{"id": 17, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 5.34))"]}]
+    },
+    {
+      "id": 9018, "color": "#00b3ff", "mass": 5, "p0_fis": [11.76, -16.18, 0], "v0_fis": [6, 6, 0],
+      "forces": [{"id": 18, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 5.65))"]}]
+    },
+    {
+      "id": 9019, "color": "#00ccff", "mass": 5, "p0_fis": [16.18, -11.76, 0], "v0_fis": [4, 7, 0],
+      "forces": [{"id": 19, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 5.96))"]}]
+    },
+    {
+      "id": 9020, "color": "#00e5ff", "mass": 5, "p0_fis": [19.02, -6.18, 0], "v0_fis": [2, 8, 0],
+      "forces": [{"id": 20, "vec": ["-x * abs(cos(t*0.2))", "-y * abs(cos(t*0.2))", "-z * 0.5 + 20 * tanh(sin(t + 6.28))"]}]
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+* {
+    box-sizing: border-box; /* Esto hace que el ancho incluya el padding */
+    margin: 0;
+    padding: 0;
+}
+
+
+.panel-derecho, 
+.panel-izquierdo, 
+.lista-particulas {
+    /* Ocultar en Firefox */
+    scrollbar-width: none; 
+    /* Ocultar en IE y Edge antiguo */
+    -ms-overflow-style: none; 
+    /* Evitar que aparezca la barra horizontal que se ve en tu foto */
+    overflow-x: hidden;
+    /* Permitir scroll vertical interno */
+    overflow-y: auto; 
+}
+
+
+.gui-wrapper {
+    position: absolute;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.panel-derecho, .panel-izquierdo {
+    position: absolute;
+    top: 20px;
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
+    color: #e0e0e0;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(100, 100, 150, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    pointer-events: all;
+    width: 340px;
+    transition: all 0.3s ease;
+
+    /* --- CONFIGURACIÓN PARA EL SCROLL INVISIBLE --- */
+    max-height: calc(100vh - 40px); /* Más espacio vertical */
+    overflow-y: auto;               /* Permite el scroll vertical */
+    scrollbar-width: none;          /* Oculta en Firefox */
+    -ms-overflow-style: none;       /* Oculta en IE y Edge antiguo */
+}
+
+/* Ocultar barra en Chrome, Safari y Edge Moderno */
+.panel-derecho::-webkit-scrollbar,
+.panel-izquierdo::-webkit-scrollbar {
+    display: none;
+}
+
+.panel-derecho {
+    right: 20px;
+    border-right: 4px solid #ff6b6b;
+}
+
+.panel-izquierdo {
+    left: 20px;
+    border-left: 4px solid #4ecdc4;
+}
+
+.panel-derecho:hover, .panel-izquierdo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+}
+
+h4 {
+    color: #b8d4f0;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+input {
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.8), rgba(20, 20, 30, 0.8));
+    border: 1px solid rgba(100, 100, 150, 0.4);
+    color: #ffffff;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 13px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.3);
+    background: linear-gradient(135deg, rgba(35, 35, 45, 0.9), rgba(25, 25, 35, 0.9));
+}
+
+button {
+    width: 100%;
+    padding: 10px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-play {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.btn-play:hover {
+    background: linear-gradient(135deg, #218838, #1aa085);
+}
+
+.btn-pause {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+}
+
+.btn-pause:hover {
+    background: linear-gradient(135deg, #c82333, #c0392b);
+}
+
+.btn-delete {
+    width: auto;
+    padding: 4px 8px;
+    background: linear-gradient(135deg, #ff4757, #ff3838);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #ff3742, #ff2828);
+    transform: scale(1.05);
+}
+
+.particle-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    background: rgba(40, 40, 50, 0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.particle-item:hover {
+    background: rgba(50, 50, 60, 0.7);
+    transform: translateX(2px);
+}
+
+.particle-item.selected {
+    background: rgba(78, 205, 196, 0.2);
+    border-left: 3px solid #4ecdc4;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(100, 100, 150, 0.5), transparent);
+    margin: 15px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #b8d4f0;
+    font-weight: 500;
+}
+
+.syntax-guide {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.8), rgba(20, 20, 30, 0.8));
+    border-radius: 8px;
+    font-size: 12px;
+    color: #cccccc;
+    border: 1px solid rgba(100, 100, 150, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.syntax-guide code {
+    color: #4ecdc4;
+    display: block;
+    margin: 6px 0;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+}
+
+.syntax-guide p {
+    margin: 8px 0;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-derecho, .panel-izquierdo {
+    animation: fadeIn 0.5s ease-out;
+}
+
+
+.force-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.force-row input {
+    margin: 0;
+    padding: 4px;
+}
+
+.btn-add-force {
+    background: #4ecdc4;
+    color: #1a1a1a;
+    margin-top: 10px;
+}
+
+.toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.toggle-container button {
+    width: auto;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+/* ========== SECCIONES COLAPSABLES ========== */
+.section {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: rgba(30, 30, 40, 0.5);
+    overflow: hidden;
+    border: 1px solid rgba(100, 100, 150, 0.2);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    cursor: pointer;
+    background: rgba(40, 40, 55, 0.6);
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.section-header:hover {
+    background: rgba(50, 50, 65, 0.8);
+}
+
+.section-header h4 {
+    margin: 0;
+    font-size: 13px;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-header .toggle-icon {
+    font-size: 12px;
+    color: #888;
+    transition: transform 0.3s ease;
+}
+
+.section-header .toggle-icon.open {
+    transform: rotate(180deg);
+}
+
+.section-content {
+    padding: 12px;
+    animation: slideDown 0.3s ease;
+}
+
+.section-content.collapsed {
+    display: none;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 500px; }
+}
+
+/* ========== BOTONES GUARDAR/CARGAR ========== */
+.config-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.config-buttons button {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 11px;
+    margin: 0;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #6c5ce7, #a55eea);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #5b4bd5, #9645d9);
+}
+
+.btn-load {
+    background: linear-gradient(135deg, #0984e3, #00cec9);
+    color: white;
+}
+
+.btn-load:hover {
+    background: linear-gradient(135deg, #0773c8, #00b5b1);
+}
+
+.btn-example {
+    background: linear-gradient(135deg, #f39c12, #e74c3c);
+    color: white;
+    margin-bottom: 15px;
+}
+
+.btn-example:hover {
+    background: linear-gradient(135deg, #d68910, #c0392b);
+}
+
+.hidden-input {
+    display: none;
+}
+
+/* ========== GRID DE BOTONES ========== */
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.button-grid button {
+    margin: 0;
+    font-size: 11px;
+    padding: 8px;
+}
+
+/* ========== LISTA MEJORADA ========== */
+.lista-particulas {
+    max-height: 200px;
+    margin-top: 8px;
+}
