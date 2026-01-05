@@ -62,10 +62,3 @@ Unlike other simulators that suffer from memory leaks, this engine implements:
 * **Function Caching:** Formulas are compiled only once into executable functions.
 * **Direct-Ref Manipulation:** Real-time position updates are performed directly on the Three.js mesh references, bypassing the React render cycle to maintain stable RAM usage and high FPS.
 
----
-
-*Developed to survive Physics 2.*
-
----
-
-Would you like me to help you set up a **GitHub Actions** workflow so that the project deploys automatically whenever you push your code?
