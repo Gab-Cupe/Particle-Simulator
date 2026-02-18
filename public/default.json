@@ -3,10 +3,13 @@
   "timestamp": "2026-01-05T19:30:00.000Z",
   "settings": {
     "gravity": true,
-    "friction": 0.0,
+    "frictionStatic": 0.4,
+    "frictionKinetic": 0.3,
     "deltaT": 0.076,
     "path": false,
-    "axes": false
+    "axes": false,
+    "forceMode": 1,
+    "showInfo": false
   },
   "particulas": [
     {

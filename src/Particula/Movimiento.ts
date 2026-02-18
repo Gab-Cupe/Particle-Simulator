@@ -49,6 +49,28 @@ export interface Force {
   vec: [string, string, string];
 }
 
+// Sistema de eventos para partículas
+export interface EventCondition {
+  variable: 'x' | 'y' | 'z' | 't' | 'vx' | 'vy' | 'vz' | 'v';
+  operator: '==' | '>' | '<' | '>=' | '<=' | '!=';
+  value: number;
+}
+
+export interface EventAction {
+  type: 'pause' | 'changeColor';
+  payload?: string; // Para changeColor es el nuevo color
+}
+
+export interface ParticleEvent {
+  id: number;
+  name: string;
+  conditions: EventCondition[];
+  conditionLogic: 'AND' | 'OR';
+  actions: EventAction[];
+  triggered: boolean; // Para evitar que se dispare múltiples veces
+  enabled: boolean;
+}
+
 export interface PData {
   id: number;
   p0_fis: [number, number, number];
@@ -66,4 +88,5 @@ export interface PData {
   mass: number;
   isMassless: boolean;
   forces: Force[];
+  events: ParticleEvent[];
 }

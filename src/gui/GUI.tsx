@@ -1,6 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type MutableRefObject } from "react";
 import "./stylesGui.css";
-import type { PData, Force } from "../Particula/Movimiento";
+import type { PData } from "../Particula/Movimiento";
+import ParticleEditor from "./ParticleEditor";
+import InfoPanel from "./InfoPanel";
+import type { ForceDisplayMode } from "../Utils";
+
+interface LiveData {
+  pos: [number, number, number];
+  vel: [number, number, number];
+  t: number;
+  trail: [number, number, number][];
+  frameCount: number;
+}
 
 // Interfaz para la configuración guardada
 interface SavedConfig {
@@ -34,16 +45,27 @@ interface GUIProps {
   gravity: boolean;
   path: boolean;
   axes: boolean;
+  showGrid: boolean;
+  setShowGrid: (val: boolean) => void;
+  showParticles: boolean;
+  setShowParticles: (val: boolean) => void;
+  particleRadius: number;
+  setParticleRadius: (v: number) => void;
   particulas: PData[];
   onUpdatePart: (id: number, data: any) => void;
   onDelete: (id: number) => void;
   onLoadConfig?: (config: SavedConfig) => void;
+  forceMode: ForceDisplayMode;
+  setForceMode: (mode: ForceDisplayMode) => void;
+  showInfo: boolean;
+  setShowInfo: (val: boolean) => void;
+  physicsRefs: MutableRefObject<Record<number, LiveData>>;
 }
 
 const GUI: React.FC<GUIProps> = (p) => {
   const [selId, setSelId] = useState<number | null>(null);
-  const [nX, setNX] = useState(0);
-  const [nY, setNY] = useState(0);
+  const [nX, setNX] = useState(10);
+  const [nY, setNY] = useState(10);
   const [nZ, setNZ] = useState(10);
   
   // Estados para secciones colapsables
@@ -62,12 +84,6 @@ const GUI: React.FC<GUIProps> = (p) => {
   useEffect(() => {
     if (selId !== null) p.onPlay(false);
   }, [selId]);
-
-  const addForce = () => {
-    if (!sel) return;
-    const newForce: Force = { id: Date.now(), vec: ["0", "0", "0"] };
-    p.onUpdatePart(sel.id, { forces: [...sel.forces, newForce] });
-  };
 
   const toggleSection = (section: keyof typeof openSections) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -201,10 +217,51 @@ const GUI: React.FC<GUIProps> = (p) => {
                 <button onClick={() => p.onToggleAxes(!p.axes)}>
                   Axes: {p.axes ? "ON" : "OFF"}
                 </button>
+                <button onClick={() => p.setShowGrid(!p.showGrid)}>
+                  Grid: {p.showGrid ? "ON" : "OFF"}
+                </button>
+                <button onClick={() => p.setShowParticles(!p.showParticles)}>
+                  Particles: {p.showParticles ? "ON" : "OFF"}
+                </button>
                 <button onClick={p.onResetCamera} style={{ background: "#555" }}>
                   Reset Camera
                 </button>
               </div>
+              {p.showParticles && (
+                <>
+                  <label>Particle Size: {p.particleRadius.toFixed(2)}</label>
+                  <input
+                    type="range"
+                    min="0.1"
+                    max="3"
+                    step="0.1"
+                    value={p.particleRadius}
+                    onChange={(e) => p.setParticleRadius(Number(e.target.value))}
+                  />
+                </>
+              )}
+              <hr />
+              <label>Forces Display</label>
+              <button
+                onClick={() => p.setForceMode(((p.forceMode + 1) % 3) as 0 | 1 | 2)}
+                style={{
+                  background: p.forceMode === 0 ? "#666" : p.forceMode === 1 ? "#ff6b6b" : "#4ecdc4",
+                  color: "#fff",
+                  marginBottom: "10px",
+                }}
+              >
+                {p.forceMode === 0 ? "Forces: OFF" : p.forceMode === 1 ? "Forces: RESULTANT" : "Forces: INDIVIDUAL"}
+              </button>
+              <button
+                onClick={() => p.setShowInfo(!p.showInfo)}
+                style={{
+                  background: p.showInfo ? "#ffc107" : "#666",
+                  color: p.showInfo ? "#000" : "#fff",
+                  marginBottom: "10px",
+                }}
+              >
+                {p.showInfo ? "Info: ON" : "Info: OFF"}
+              </button>
               <hr />
               <label>Ground Friction: {p.friction.toFixed(2)}</label>
               <input
@@ -312,228 +369,22 @@ const GUI: React.FC<GUIProps> = (p) => {
       </div>
 
       {sel && (
-        <div className="panel-izquierdo">
-          <h3>PHYSICS EDITOR</h3>
-          <label>Calculation Mode</label>
-          <button
-            onClick={() =>
-              p.onUpdatePart(sel.id, { isMassless: !sel.isMassless })
-            }
-            style={{
-              background: sel.isMassless ? "#4ecdc4" : "#ff6b6b",
-              color: "#000",
-              marginBottom: "15px",
-            }}
-          >
-            {sel.isMassless
-              ? "MODE: KINEMATICS f(t)"
-              : "MODE: DYNAMICS (FORCES)"}
-          </button>
-
-          <label>Initial Position (X, Y, Z)</label>
-          <div style={{ display: "flex", gap: 2 }}>
-            <input
-              type="number"
-              value={sel.p0_fis[0]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  p0_fis: [
-                    Number(e.target.value),
-                    sel.p0_fis[1],
-                    sel.p0_fis[2],
-                  ],
-                })
-              }
-            />
-            <input
-              type="number"
-              value={sel.p0_fis[1]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  p0_fis: [
-                    sel.p0_fis[0],
-                    Number(e.target.value),
-                    sel.p0_fis[2],
-                  ],
-                })
-              }
-            />
-            <input
-              type="number"
-              value={sel.p0_fis[2]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  p0_fis: [
-                    sel.p0_fis[0],
-                    sel.p0_fis[1],
-                    Number(e.target.value),
-                  ],
-                })
-              }
-            />
-          </div>
-
-          {!sel.isMassless ? (
-            <>
-              <label>Mass (kg)</label>
-              <input
-                type="number"
-                value={sel.mass}
-                onChange={(e) =>
-                  p.onUpdatePart(sel.id, { mass: Number(e.target.value) })
-                }
-              />
-              <label>Forces F(t, x, y, z) (N)</label>
-              <div
-                style={{
-                  maxHeight: "180px",
-                  overflowY: "auto",
-                  marginBottom: "10px",
-                }}
-              >
-                {sel.forces.map((f, i) => (
-                  <div
-                    key={f.id}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      background: "rgba(255,255,255,0.05)",
-                      padding: "5px",
-                      borderRadius: "4px",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: "2px" }}>
-                      <input
-                        type="text"
-                        value={f.vec[0]}
-                        onChange={(e) => {
-                          const nf = [...sel.forces];
-                          nf[i].vec[0] = e.target.value;
-                          p.onUpdatePart(sel.id, { forces: nf });
-                        }}
-                        placeholder="Fx"
-                      />
-                      <input
-                        type="text"
-                        value={f.vec[1]}
-                        onChange={(e) => {
-                          const nf = [...sel.forces];
-                          nf[i].vec[1] = e.target.value;
-                          p.onUpdatePart(sel.id, { forces: nf });
-                        }}
-                        placeholder="Fy"
-                      />
-                      <input
-                        type="text"
-                        value={f.vec[2]}
-                        onChange={(e) => {
-                          const nf = [...sel.forces];
-                          nf[i].vec[2] = e.target.value;
-                          p.onUpdatePart(sel.id, { forces: nf });
-                        }}
-                        placeholder="Fz"
-                      />
-                      <button
-                        className="btn-delete"
-                        style={{ width: "30px" }}
-                        onClick={() =>
-                          p.onUpdatePart(sel.id, {
-                            forces: sel.forces.filter((x) => x.id !== f.id),
-                          })
-                        }
-                      >
-                        X
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={addForce}
-                style={{ background: "#28a745", color: "#fff" }}
-              >
-                + ADD FORCE
-              </button>
-            </>
-          ) : (
-            <>
-              <label>Functions f(t)</label>
-              <input
-                placeholder="fx(t)"
-                value={sel.fx}
-                onChange={(e) => p.onUpdatePart(sel.id, { fx: e.target.value })}
-              />
-              <input
-                placeholder="fy(t)"
-                value={sel.fy}
-                onChange={(e) => p.onUpdatePart(sel.id, { fy: e.target.value })}
-              />
-              <input
-                placeholder="fz(t)"
-                value={sel.fz}
-                onChange={(e) => p.onUpdatePart(sel.id, { fz: e.target.value })}
-              />
-            </>
-          )}
-
-          <label>Initial Velocity (v0)</label>
-          <div style={{ display: "flex", gap: 2 }}>
-            <input
-              type="number"
-              value={sel.v0_fis[0]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  v0_fis: [
-                    Number(e.target.value),
-                    sel.v0_fis[1],
-                    sel.v0_fis[2],
-                  ],
-                })
-              }
-            />
-            <input
-              type="number"
-              value={sel.v0_fis[1]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  v0_fis: [
-                    sel.v0_fis[0],
-                    Number(e.target.value),
-                    sel.v0_fis[2],
-                  ],
-                })
-              }
-            />
-            <input
-              type="number"
-              value={sel.v0_fis[2]}
-              onChange={(e) =>
-                p.onUpdatePart(sel.id, {
-                  v0_fis: [
-                    sel.v0_fis[0],
-                    sel.v0_fis[1],
-                    Number(e.target.value),
-                  ],
-                })
-              }
-            />
-          </div>
-
-          <label>Color</label>
-          <input
-            type="color"
-            value={sel.color}
-            onChange={(e) => p.onUpdatePart(sel.id, { color: e.target.value })}
-          />
-          <button
-            onClick={() => setSelId(null)}
-            style={{ marginTop: 10, background: "#007bff", color: "white" }}
-          >
-            CLOSE
-          </button>
-        </div>
+        <ParticleEditor
+          sel={sel}
+          onUpdatePart={p.onUpdatePart}
+          onClose={() => setSelId(null)}
+        />
       )}
+
+      {/* Panel de información a la izquierda */}
+      <InfoPanel
+        particulas={p.particulas}
+        physicsRefs={p.physicsRefs}
+        gravity={p.gravity}
+        friction={p.friction}
+        isVisible={p.showInfo}
+        isRunning={p.isRunning}
+      />
     </div>
   );
 };

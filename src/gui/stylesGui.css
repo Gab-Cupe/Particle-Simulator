@@ -28,6 +28,7 @@
     font-size: 14px;
 }
 
+
 .panel-derecho, .panel-izquierdo {
     position: absolute;
     top: 20px;
@@ -47,6 +48,10 @@
     overflow-y: auto;               /* Permite el scroll vertical */
     scrollbar-width: none;          /* Oculta en Firefox */
     -ms-overflow-style: none;       /* Oculta en IE y Edge antiguo */
+}
+
+.panel-izquierdo {
+    z-index: 10001;
 }
 
 /* Ocultar barra en Chrome, Safari y Edge Moderno */
@@ -380,4 +385,224 @@ label {
 .lista-particulas {
     max-height: 200px;
     margin-top: 8px;
+}
+
+/* ========== PANEL DE INFORMACIÓN (IZQUIERDA) ========== */
+.info-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 20, 0.95));
+    color: #e0e0e0;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(100, 100, 150, 0.3);
+    border-left: 4px solid #4ecdc4;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    pointer-events: all;
+    width: 320px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.info-panel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Tiempo en la parte superior */
+.info-time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(78, 205, 196, 0.1));
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.time-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4ecdc4;
+}
+
+.time-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.info-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(100, 100, 150, 0.5), transparent);
+    margin: 10px 0;
+}
+
+/* Lista de partículas */
+.info-particles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Tarjeta de cada partícula */
+.info-particle-card {
+    background: rgba(30, 30, 40, 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(100, 100, 150, 0.2);
+}
+
+.info-particle-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(40, 40, 55, 0.8);
+    border-left: 4px solid #ffffff;
+}
+
+.info-particle-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.info-ground-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.info-massless-badge {
+    background: linear-gradient(135deg, #6c5ce7, #a55eea);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.info-particle-body {
+    padding: 10px 12px;
+}
+
+/* Filas de información */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.info-label {
+    color: #b8d4f0;
+    font-weight: 500;
+    min-width: 40px;
+}
+
+.info-value {
+    color: #ffffff;
+    font-family: 'Consolas', 'Courier New', monospace;
+    text-align: right;
+}
+
+.info-subvalue {
+    display: block;
+    font-size: 10px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* Sección de fuerzas */
+.info-forces-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(100, 100, 150, 0.3);
+}
+
+.info-forces-title {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b8d4f0;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-force-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.force-name {
+    min-width: 80px;
+    font-weight: 500;
+}
+
+.force-value {
+    min-width: 60px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    text-align: right;
+}
+
+.force-components {
+    font-size: 10px;
+    color: #888;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* Colores para diferentes tipos de fuerzas */
+.info-force-weight {
+    background: rgba(0, 255, 0, 0.1);
+    border-left: 3px solid #00ff00;
+}
+
+.info-force-applied {
+    background: rgba(0, 255, 255, 0.1);
+    border-left: 3px solid #00ffff;
+}
+
+.info-force-normal {
+    background: rgba(255, 255, 0, 0.1);
+    border-left: 3px solid #ffff00;
+}
+
+.info-force-friction {
+    background: rgba(255, 0, 255, 0.1);
+    border-left: 3px solid #ff00ff;
+}
+
+.info-no-forces {
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+}
+
+.info-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
 }

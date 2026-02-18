@@ -1,37 +1,38 @@
-import { useState, useEffect, useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { GridHelper, Vector3, ArrowHelper, Mesh, Group } from "three";
-import { OrbitControls, Line } from "@react-three/drei";
+import { useState, useEffect, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import { GridHelper, Mesh } from "three";
+import { OrbitControls } from "@react-three/drei";
 import GUI from "../gui/GUI";
-import Particula from "./Particula";
-import { evaluarFormula, type PData } from "./Movimiento";
+import { type PData } from "./Movimiento";
+import {
+  Axes,
+  ParticleGroup,
+  PhysicsUpdate,
+  SmoothCameraFocus,
+  type ForceDisplayMode,
+  type LiveData,
+} from "../Utils";
 
 const Escenario: React.FC = () => {
   const [showGui, setShowGui] = useState(true);
   const [run, setRun] = useState(false);
   const [grav, setGrav] = useState(true);
   const [path, setPath] = useState(true);
-  const [showAxes, setShowAxes] = useState(true);
-  const [dT, setDT] = useState(0.01);
+  const [showAxes, setShowAxes] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
+  const [showParticles, setShowParticles] = useState(false);
+  const [particleRadius, setParticleRadius] = useState(0.15);
+  const [dT, setDT] = useState(0.001);
   const [parts, setParts] = useState<PData[]>([]);
   const [focusTarget, setFocusTarget] = useState<
     [number, number, number] | null
   >(null);
   const [resetCamTick, setResetCamTick] = useState(0);
   const [friction, setFriction] = useState(0.2);
+  const [forceMode, setForceMode] = useState<ForceDisplayMode>(1);
+  const [showInfo, setShowInfo] = useState(false);
 
-  const physicsRefs = useRef<
-    Record<
-      number,
-      {
-        pos: [number, number, number];
-        vel: [number, number, number];
-        t: number;
-        trail: [number, number, number][];
-        frameCount: number;
-      }
-    >
-  >({});
+  const physicsRefs = useRef<Record<number, LiveData>>({});
   const meshRefs = useRef<Record<number, Mesh>>({});
 
   useEffect(() => {
@@ -67,10 +68,12 @@ const Escenario: React.FC = () => {
       mass: 1,
       isMassless: true,
       forces: [],
+      events: [],
     };
     physicsRefs.current[id] = {
       pos: [x, y, z],
       vel: [0, 0, 0],
+      acc: [0, 0, 0], // Aceleración inicial para Velocity Verlet
       t: 0,
       trail: [[y, z, x]],
       frameCount: 0,
@@ -84,6 +87,7 @@ const Escenario: React.FC = () => {
       physicsRefs.current[p.id] = {
         pos: [...p.p0_fis],
         vel: [...p.v0_fis],
+        acc: [0, 0, 0], // Aceleración inicial para Velocity Verlet
         t: 0,
         trail: [[p.p0_fis[1], p.p0_fis[2], p.p0_fis[0]]],
         frameCount: 0,
@@ -101,7 +105,33 @@ const Escenario: React.FC = () => {
         t: 0,
         enSuelo: false,
         trail_three: [[p.p0_fis[1], p.p0_fis[2], p.p0_fis[0]]],
+        // Resetear eventos triggered
+        events: p.events?.map(e => ({ ...e, triggered: false })) || [],
       }))
+    );
+  };
+
+  // Marcar un evento como triggered
+  const handleEventTriggered = (particleId: number, eventId: number) => {
+    setParts((prev) =>
+      prev.map((p) => {
+        if (p.id === particleId) {
+          return {
+            ...p,
+            events: p.events.map((e) =>
+              e.id === eventId ? { ...e, triggered: true } : e
+            ),
+          };
+        }
+        return p;
+      })
+    );
+  };
+
+  // Actualizar partícula sin resetear posición (para eventos)
+  const updateParticleFromEvent = (id: number, data: any) => {
+    setParts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...data } : p))
     );
   };
 
@@ -113,6 +143,7 @@ const Escenario: React.FC = () => {
           physicsRefs.current[id] = {
             pos: updated.p0_fis,
             vel: updated.v0_fis,
+            acc: [0, 0, 0], // Aceleración inicial para Velocity Verlet
             t: 0,
             trail: [[updated.p0_fis[1], updated.p0_fis[2], updated.p0_fis[0]]],
             frameCount: 0,
@@ -159,6 +190,7 @@ const Escenario: React.FC = () => {
         physicsRefs.current[newId] = {
           pos: [p.p0_fis[0], p.p0_fis[1], p.p0_fis[2]] as [number, number, number],
           vel: [p.v0_fis[0], p.v0_fis[1], p.v0_fis[2]] as [number, number, number],
+          acc: [0, 0, 0], // Aceleración inicial para Velocity Verlet
           t: 0,
           trail: [[p.p0_fis[1], p.p0_fis[2], p.p0_fis[0]]],
           frameCount: 0,
@@ -185,6 +217,12 @@ const Escenario: React.FC = () => {
         onTogglePath={setPath}
         axes={showAxes}
         onToggleAxes={setShowAxes}
+        showGrid={showGrid}
+        setShowGrid={setShowGrid}
+        showParticles={showParticles}
+        setShowParticles={setShowParticles}
+        particleRadius={particleRadius}
+        setParticleRadius={setParticleRadius}
         onFocus={(part) => {
           const live = physicsRefs.current[part.id];
           if (live) setFocusTarget([live.pos[1], live.pos[2], live.pos[0]]);
@@ -204,6 +242,11 @@ const Escenario: React.FC = () => {
           delete meshRefs.current[id];
         }}
         onLoadConfig={handleLoadConfig}
+        forceMode={forceMode}
+        setForceMode={setForceMode}
+        showInfo={showInfo}
+        setShowInfo={setShowInfo}
+        physicsRefs={physicsRefs}
       />
 
       <Canvas camera={{ position: [50, 50, 50], far: 10000 }}>
@@ -216,51 +259,14 @@ const Escenario: React.FC = () => {
           resetTick={resetCamTick}
           defaultCamPos={[50, 50, 50]}
         />
-        <primitive
-          object={new GridHelper(2000, 100, 0x444444, 0x222222)}
-          position={[0, 0, 0]}
-        />
-
-        {showAxes && (
-          <group>
-            <mesh position={[0, 0, 0]}>
-              <cylinderGeometry args={[0.1, 0.1, 2000]} />
-              <meshBasicMaterial color="red" />
-            </mesh>
-            <mesh position={[1000, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="red" />
-            </mesh>
-            <mesh position={[-1000, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="red" />
-            </mesh>
-            <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-              <cylinderGeometry args={[0.1, 0.1, 2000]} />
-              <meshBasicMaterial color="green" />
-            </mesh>
-            <mesh position={[0, 1000, 0]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="green" />
-            </mesh>
-            <mesh position={[0, -1000, 0]} rotation={[Math.PI, 0, 0]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="green" />
-            </mesh>
-            <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-              <cylinderGeometry args={[0.1, 0.1, 2000]} />
-              <meshBasicMaterial color="blue" />
-            </mesh>
-            <mesh position={[0, 0, 1000]} rotation={[0, 0, Math.PI / 2]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="blue" />
-            </mesh>
-            <mesh position={[0, 0, -1000]} rotation={[0, 0, -Math.PI / 2]}>
-              <coneGeometry args={[0.4, 1.5, 8]} />
-              <meshBasicMaterial color="blue" />
-            </mesh>
-          </group>
+        {showGrid && (
+          <primitive
+            object={new GridHelper(2000, 100, 0x444444, 0x222222)}
+            position={[0, 0, 0]}
+          />
         )}
+
+        {showAxes && <Axes />}
 
         <PhysicsUpdate
           parts={parts}
@@ -270,6 +276,9 @@ const Escenario: React.FC = () => {
           dT={dT}
           grav={grav}
           friction={friction}
+          onPause={() => setRun(false)}
+          onUpdateParticle={updateParticleFromEvent}
+          onEventTriggered={handleEventTriggered}
         />
 
         {parts.map((p) => (
@@ -280,279 +289,18 @@ const Escenario: React.FC = () => {
             physicsRefs={physicsRefs}
             meshRefs={meshRefs}
             run={run}
+            forceMode={forceMode}
+            gravity={grav}
+            friction={friction}
+            showInfo={showInfo}
+            showParticles={showParticles}
+            particleRadius={particleRadius}
           />
         ))}
         <OrbitControls makeDefault />
       </Canvas>
     </div>
   );
-};
-
-const ParticleGroup = ({ p, path, physicsRefs, meshRefs}: any) => {
-  const groupRef = useRef<Group>(null);
-  const [, setTick] = useState(0);
-
-  // El renderizado de este componente ahora es constante :D chao 5.3gb de consumo de ram
-  useFrame(() => {
-    setTick((t) => t + 1);
-  });
-
-  const liveData = physicsRefs.current[p.id];
-  if (!liveData) return null;
-
-  return (
-    <group ref={groupRef}>
-      <Particula
-        ref={(el) => {
-          if (el) meshRefs.current[p.id] = el;
-        }}
-        posicion={[liveData.pos[1], liveData.pos[2], liveData.pos[0]]}
-        color={p.color}
-      />
-
-      {path && liveData.trail.length > 1 && (
-        <Line
-          points={liveData.trail}
-          color={p.color}
-          lineWidth={1.5}
-          transparent
-          opacity={0.6}
-        />
-      )}
-
-      {!p.isMassless &&
-        p.forces.map((f: any) => (
-          <ForceArrow key={f.id} f={f} liveData={liveData} />
-        ))}
-    </group>
-  );
-};
-
-// Sub-componente para la flecha de fuerza
-const ForceArrow = ({ f, liveData }: any) => {
-  const fx = evaluarFormula(
-    f.vec[0],
-    liveData.t,
-    liveData.pos[0],
-    liveData.pos[1],
-    liveData.pos[2]
-  );
-  const fy = evaluarFormula(
-    f.vec[1],
-    liveData.t,
-    liveData.pos[0],
-    liveData.pos[1],
-    liveData.pos[2]
-  );
-  const fz = evaluarFormula(
-    f.vec[2],
-    liveData.t,
-    liveData.pos[0],
-    liveData.pos[1],
-    liveData.pos[2]
-  );
-
-  const mag = Math.sqrt(fx ** 2 + fy ** 2 + fz ** 2);
-  const dir = useMemo(() => new Vector3(), []);
-  const origin = useMemo(() => new Vector3(), []);
-
-  if (mag < 0.01) return null;
-
-  dir.set(fy, fz, fx).normalize();
-  origin.set(liveData.pos[1], liveData.pos[2], liveData.pos[0]);
-
-  return (
-    <primitive
-      object={new ArrowHelper(dir, origin, mag * 0.2, 0xffff00)}
-      onUpdate={(self: any) => self.setDirection(dir)}
-    />
-  );
-};
-
-const PhysicsUpdate = ({
-  parts,
-  physicsRefs,
-  meshRefs,
-  run,
-  dT,
-  grav,
-  friction,
-}: any) => {
-  useFrame(() => {
-    if (!run) return;
-    parts.forEach((p: PData) => {
-      const live = physicsRefs.current[p.id];
-      if (!live) return;
-      const nt = live.t + dT;
-      const g_val = grav ? 9.80665 : 0;
-      let posFinal: [number, number, number];
-      let velFinal: [number, number, number] = [live.vel[0], live.vel[1], live.vel[2]];
-
-      if (p.isMassless) {
-        const nx =
-          p.p0_fis[0] +
-          evaluarFormula(p.fx, nt, live.pos[0], live.pos[1], live.pos[2]) +
-          p.v0_fis[0] * nt;
-        const ny =
-          p.p0_fis[1] +
-          evaluarFormula(p.fy, nt, live.pos[0], live.pos[1], live.pos[2]) +
-          p.v0_fis[1] * nt;
-        const nz =
-          p.p0_fis[2] +
-          evaluarFormula(p.fz, nt, live.pos[0], live.pos[1], live.pos[2]) +
-          p.v0_fis[2] * nt -
-          0.5 * g_val * Math.pow(nt, 2);
-        posFinal = [nx, ny, nz];
-      } else {
-        const sumF = p.forces.reduce(
-          (acc, f) => {
-            const fx = evaluarFormula(
-              f.vec[0],
-              live.t,
-              live.pos[0],
-              live.pos[1],
-              live.pos[2]
-            );
-            const fy = evaluarFormula(
-              f.vec[1],
-              live.t,
-              live.pos[0],
-              live.pos[1],
-              live.pos[2]
-            );
-            const fz = evaluarFormula(
-              f.vec[2],
-              live.t,
-              live.pos[0],
-              live.pos[1],
-              live.pos[2]
-            );
-            return [acc[0] + fx, acc[1] + fy, acc[2] + fz];
-          },
-          [0, 0, 0]
-        );
-        const m = p.mass || 0.001;
-        const ax = sumF[0] / m;
-        const ay = sumF[1] / m;
-        const az = sumF[2] / m - g_val;
-        velFinal = [
-          live.vel[0] + ax * dT,
-          live.vel[1] + ay * dT,
-          live.vel[2] + az * dT,
-        ];
-        posFinal = [
-          live.pos[0] + velFinal[0] * dT,
-          live.pos[1] + velFinal[1] * dT,
-          live.pos[2] + velFinal[2] * dT,
-        ];
-      }
-
-      if (posFinal[2] <= 0) {
-        posFinal[2] = 0;
-        if (velFinal[2] < 0) velFinal[2] = 0;
-        const vHor = Math.hypot(velFinal[0], velFinal[1]);
-        if (vHor > 1e-6) {
-          const fricDecel = Math.max(0, friction) * g_val;
-          const newVHor = Math.max(0, vHor - fricDecel * dT);
-          const scale = newVHor / vHor;
-          velFinal[0] *= scale;
-          velFinal[1] *= scale;
-        }
-      }
-      live.pos = posFinal;
-      live.vel = velFinal;
-      live.t = nt;
-      live.frameCount++;
-      if (live.frameCount % 5 === 0) {
-        live.trail = [
-          ...live.trail,
-          [posFinal[1], posFinal[2], posFinal[0]],
-        ].slice(-200);
-      }
-      if (meshRefs.current[p.id]) {
-        meshRefs.current[p.id].position.set(
-          posFinal[1],
-          posFinal[2],
-          posFinal[0]
-        );
-      }
-    });
-  });
-  return null;
-};
-
-const SmoothCameraFocus = ({ target, resetTick, defaultCamPos }: any) => {
-  const animRef = useRef<any>(null);
-  const pendingFocusRef = useRef(false);
-  const pendingResetRef = useRef(false);
-  const launchAnim = (state: any, opts: any) => {
-    const cam = state.camera;
-    const controls = (state.controls as any) || null;
-    const currTarget = controls?.target || new Vector3();
-    const currPos = cam.position.clone();
-    const startPos = currPos.clone();
-    const startTarget = currTarget.clone();
-    let endTarget, endPos;
-    if (opts.type === "reset") {
-      endTarget = new Vector3(0, 0, 0);
-      endPos = new Vector3(...defaultCamPos);
-    } else {
-      endTarget = new Vector3(...opts.target);
-      const offset = currPos.clone().sub(currTarget);
-      const dir =
-        offset.length() > 0.0001
-          ? offset.clone().normalize()
-          : new Vector3(0, 1, 0);
-      endPos = endTarget.clone().add(dir.multiplyScalar(12));
-    }
-    animRef.current = {
-      startPos,
-      startTarget,
-      endPos,
-      endTarget,
-      startTime: performance.now(),
-      duration: 450,
-    };
-  };
-  useEffect(() => {
-    pendingFocusRef.current = !!target;
-    animRef.current = null;
-  }, [target]);
-  const resetTickRef = useRef(resetTick);
-  useEffect(() => {
-    if (resetTick === resetTickRef.current) return;
-    resetTickRef.current = resetTick;
-    pendingResetRef.current = true;
-    animRef.current = null;
-  }, [resetTick]);
-  useFrame((state) => {
-    if (target && pendingFocusRef.current && !animRef.current) {
-      launchAnim(state, { type: "focus", target });
-      pendingFocusRef.current = false;
-    }
-    if (
-      pendingResetRef.current &&
-      resetTickRef.current === resetTick &&
-      !target &&
-      !animRef.current
-    ) {
-      if (resetTick > 0) {
-        launchAnim(state, { type: "reset" });
-        pendingResetRef.current = false;
-      }
-    }
-    const anim = animRef.current;
-    if (!anim) return;
-    const now = performance.now();
-    const t = Math.min(1, (now - anim.startTime) / anim.duration);
-    state.camera.position.lerpVectors(anim.startPos, anim.endPos, t);
-    const newTarget = anim.startTarget.clone().lerp(anim.endTarget, t);
-    if ((state.controls as any)?.target)
-      (state.controls as any).target.copy(newTarget);
-    (state.controls as any)?.update?.();
-    if (t >= 1) animRef.current = null;
-  });
-  return null;
 };
 
 export default Escenario;
