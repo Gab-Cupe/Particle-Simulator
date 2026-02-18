@@ -13,7 +13,7 @@
 
 **Particle-Simulator** is a real-time particle simulation and visualization engine built with **React** and **Three.js**.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-00C853?style=for-the-badge&logo=vercel&logoColor=white)](https://mathtools-psy.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-00C853?style=for-the-badge&logo=vercel&logoColor=white)](https://particle-simulator-psy.netlify.app/)
 
 [![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffe-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/gabcupe)
 
