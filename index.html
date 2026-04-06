@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particle Simulator</title>
+  </head>
+  <body>
+    <div class="mobile-warning" style="display:none">
+      <div class="icon">💻</div>
+      <h1>Desktop Required</h1>
+      <p>Hey! Please use a computer to access this physics simulator. The experience requires a larger screen.</p>
+    </div>
+    <script>
+      // Mostrar advertencia solo si es móvil
+      function isMobile() {
+        return window.innerWidth <= 768;
+      }
+      function toggleMobileWarning() {
+        var mw = document.querySelector('.mobile-warning');
+        var root = document.getElementById('root');
+        if (isMobile()) {
+          mw.style.display = 'flex';
+          if(root) root.style.display = 'none';
+        } else {
+          mw.style.display = 'none';
+          if(root) root.style.display = '';
+        }
+      }
+      window.addEventListener('DOMContentLoaded', toggleMobileWarning);
+      window.addEventListener('resize', toggleMobileWarning);
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

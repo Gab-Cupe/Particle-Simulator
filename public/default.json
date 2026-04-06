@@ -1,0 +1,738 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-04-06T01:34:41.998Z",
+  "settings": {
+    "gravity": true,
+    "friction": 0,
+    "path": true,
+    "timeScale": 2,
+    "collisibleGround": false,
+    "showGrid": true,
+    "showParticles": true,
+    "particleRadius": 0.4,
+    "forceMode": 1,
+    "showInfo": false
+  },
+  "particulas": [
+    {
+      "id": 1775439190081.0999,
+      "color": "#ff00ff",
+      "mass": 5,
+      "p0_fis": [
+        20,
+        0,
+        0
+      ],
+      "v0_fis": [
+        0,
+        8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 1,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 0.31))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          0,
+          0,
+          20
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190408.4106,
+      "color": "#e600ff",
+      "mass": 5,
+      "p0_fis": [
+        19.02,
+        6.18,
+        0
+      ],
+      "v0_fis": [
+        -2,
+        8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 2,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 0.62))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          6.18,
+          0,
+          19.02
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190291.4321,
+      "color": "#cc00ff",
+      "mass": 5,
+      "p0_fis": [
+        16.18,
+        11.76,
+        0
+      ],
+      "v0_fis": [
+        -4,
+        7,
+        0
+      ],
+      "forces": [
+        {
+          "id": 3,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 0.94))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          11.76,
+          0,
+          16.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190114.413,
+      "color": "#b300ff",
+      "mass": 5,
+      "p0_fis": [
+        11.76,
+        16.18,
+        0
+      ],
+      "v0_fis": [
+        -6,
+        6,
+        0
+      ],
+      "forces": [
+        {
+          "id": 4,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 1.25))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          16.18,
+          0,
+          11.76
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190658.9292,
+      "color": "#9900ff",
+      "mass": 5,
+      "p0_fis": [
+        6.18,
+        19.02,
+        0
+      ],
+      "v0_fis": [
+        -8,
+        4,
+        0
+      ],
+      "forces": [
+        {
+          "id": 5,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 1.57))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          19.02,
+          0,
+          6.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190151.7725,
+      "color": "#8000ff",
+      "mass": 5,
+      "p0_fis": [
+        0,
+        20,
+        0
+      ],
+      "v0_fis": [
+        -8,
+        0,
+        0
+      ],
+      "forces": [
+        {
+          "id": 6,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 1.88))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          20,
+          0,
+          0
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190444.3042,
+      "color": "#6600ff",
+      "mass": 5,
+      "p0_fis": [
+        -6.18,
+        19.02,
+        0
+      ],
+      "v0_fis": [
+        -8,
+        -4,
+        0
+      ],
+      "forces": [
+        {
+          "id": 7,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 2.19))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          19.02,
+          0,
+          -6.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190011.9106,
+      "color": "#4d00ff",
+      "mass": 5,
+      "p0_fis": [
+        -11.76,
+        16.18,
+        0
+      ],
+      "v0_fis": [
+        -6,
+        -6,
+        0
+      ],
+      "forces": [
+        {
+          "id": 8,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 2.51))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          16.18,
+          0,
+          -11.76
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190435.6592,
+      "color": "#3300ff",
+      "mass": 5,
+      "p0_fis": [
+        -16.18,
+        11.76,
+        0
+      ],
+      "v0_fis": [
+        -4,
+        -7,
+        0
+      ],
+      "forces": [
+        {
+          "id": 9,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 2.82))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          11.76,
+          0,
+          -16.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190426.2625,
+      "color": "#1a00ff",
+      "mass": 5,
+      "p0_fis": [
+        -19.02,
+        6.18,
+        0
+      ],
+      "v0_fis": [
+        -2,
+        -8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 10,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 3.14))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          6.18,
+          0,
+          -19.02
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190291.9573,
+      "color": "#0000ff",
+      "mass": 5,
+      "p0_fis": [
+        -20,
+        0,
+        0
+      ],
+      "v0_fis": [
+        0,
+        -8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 11,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 3.45))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          0,
+          0,
+          -20
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190383.8289,
+      "color": "#001aff",
+      "mass": 5,
+      "p0_fis": [
+        -19.02,
+        -6.18,
+        0
+      ],
+      "v0_fis": [
+        2,
+        -8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 12,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 3.76))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -6.18,
+          0,
+          -19.02
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190593.697,
+      "color": "#0033ff",
+      "mass": 5,
+      "p0_fis": [
+        -16.18,
+        -11.76,
+        0
+      ],
+      "v0_fis": [
+        4,
+        -7,
+        0
+      ],
+      "forces": [
+        {
+          "id": 13,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 4.08))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -11.76,
+          0,
+          -16.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190527.4324,
+      "color": "#004dff",
+      "mass": 5,
+      "p0_fis": [
+        -11.76,
+        -16.18,
+        0
+      ],
+      "v0_fis": [
+        6,
+        -6,
+        0
+      ],
+      "forces": [
+        {
+          "id": 14,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 4.39))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -16.18,
+          0,
+          -11.76
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190544.2654,
+      "color": "#0066ff",
+      "mass": 5,
+      "p0_fis": [
+        -6.18,
+        -19.02,
+        0
+      ],
+      "v0_fis": [
+        8,
+        -4,
+        0
+      ],
+      "forces": [
+        {
+          "id": 15,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 4.71))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -19.02,
+          0,
+          -6.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190397.964,
+      "color": "#0080ff",
+      "mass": 5,
+      "p0_fis": [
+        0,
+        -20,
+        0
+      ],
+      "v0_fis": [
+        8,
+        0,
+        0
+      ],
+      "forces": [
+        {
+          "id": 16,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 5.02))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -20,
+          0,
+          0
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190229.4207,
+      "color": "#0099ff",
+      "mass": 5,
+      "p0_fis": [
+        6.18,
+        -19.02,
+        0
+      ],
+      "v0_fis": [
+        8,
+        4,
+        0
+      ],
+      "forces": [
+        {
+          "id": 17,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 5.34))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -19.02,
+          0,
+          6.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190654.9846,
+      "color": "#00b3ff",
+      "mass": 5,
+      "p0_fis": [
+        11.76,
+        -16.18,
+        0
+      ],
+      "v0_fis": [
+        6,
+        6,
+        0
+      ],
+      "forces": [
+        {
+          "id": 18,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 5.65))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -16.18,
+          0,
+          11.76
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190405.9143,
+      "color": "#00ccff",
+      "mass": 5,
+      "p0_fis": [
+        16.18,
+        -11.76,
+        0
+      ],
+      "v0_fis": [
+        4,
+        7,
+        0
+      ],
+      "forces": [
+        {
+          "id": 19,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 5.96))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -11.76,
+          0,
+          16.18
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    },
+    {
+      "id": 1775439190362.0828,
+      "color": "#00e5ff",
+      "mass": 5,
+      "p0_fis": [
+        19.02,
+        -6.18,
+        0
+      ],
+      "v0_fis": [
+        2,
+        8,
+        0
+      ],
+      "forces": [
+        {
+          "id": 20,
+          "vec": [
+            "-x * abs(cos(t*0.2))",
+            "-y * abs(cos(t*0.2))",
+            "-z * 0.5 + 20 * tanh(sin(t + 6.28))"
+          ]
+        }
+      ],
+      "t": 0,
+      "enSuelo": false,
+      "trail_three": [
+        [
+          -6.18,
+          0,
+          19.02
+        ]
+      ],
+      "kinematicMode": "position",
+      "events": []
+    }
+  ]
+}
