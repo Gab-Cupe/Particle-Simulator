@@ -36,6 +36,7 @@
 <ol>
   <li><b>Define the body:</b> Set the initial position and the mass of your particle.</li>
   <li><b>Add the chaos:</b> Assign forces in the form of functions or use the kinematic mode to define position equations directly.</li>
+  <li><b>Style the trail:</b> Adjust trail width and length per particle.</li>
   <li><b>Simulate:</b> Click <b>START</b> and watch physics finally make sense.</li>
 </ol>
 
@@ -96,6 +97,17 @@
 * **Advanced Function Caching:** Mathematical strings are transformed into executable functions once and cached to avoid the overhead of constant re-parsing.
 * **Math Object Injection:** The engine automatically injects the entire JavaScript `Math` context into your formulas, allowing for complex scientific calculations without syntax errors.
 * **Direct-Ref Manipulation:** Real-time position updates are performed directly on the Three.js mesh references. This bypasses the React render cycle, maintaining stable RAM usage and high FPS even with 100+ particles.
+* **Event Root Finding:** Event triggers use zero-crossing detection with RK4 bisection to avoid missing thresholds.
+
+---
+
+## Save / Load Configuration
+
+Saved configs now include:
+
+- Global settings (gravity, friction, path, time scale, grid, info, etc.)
+- Per-particle settings (including trail width/length and event configs)
+- Camera state (position, target, and FOV)
 
 ---
 

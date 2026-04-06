@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Mesh } from "three";
+import { useState, useEffect, useRef, type MutableRefObject } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Mesh, PerspectiveCamera } from "three";
 import { OrbitControls } from "@react-three/drei";
 import GUI from "../gui/GUI";
 import { type PData } from "./Movimiento";
@@ -14,6 +14,53 @@ import {
 } from "../Utils";
 
 const PHYSICS_DT = 0.01;
+
+type CameraState = {
+  position: [number, number, number];
+  target: [number, number, number];
+  fov: number;
+};
+
+const CameraStateSync: React.FC<{
+  stateRef: MutableRefObject<CameraState | null>;
+}> = ({ stateRef }) => {
+  const { camera, controls } = useThree();
+
+  useFrame(() => {
+    const target = (controls as any)?.target;
+    stateRef.current = {
+      position: [camera.position.x, camera.position.y, camera.position.z],
+      target: target
+        ? [target.x, target.y, target.z]
+        : [0, 0, 0],
+      fov: camera instanceof PerspectiveCamera ? camera.fov : 75,
+    };
+  });
+
+  return null;
+};
+
+const CameraStateApplier: React.FC<{
+  preset: CameraState | null;
+  tick: number;
+}> = ({ preset, tick }) => {
+  const { camera, controls } = useThree();
+
+  useEffect(() => {
+    if (!preset) return;
+    camera.position.set(...preset.position);
+    if (camera instanceof PerspectiveCamera) {
+      camera.fov = preset.fov;
+    }
+    camera.updateProjectionMatrix();
+    if ((controls as any)?.target) {
+      (controls as any).target.set(...preset.target);
+    }
+    (controls as any)?.update?.();
+  }, [camera, controls, preset, tick]);
+
+  return null;
+};
 
 const Escenario: React.FC = () => {
   const [showGui, setShowGui] = useState(true);
@@ -34,6 +81,8 @@ const Escenario: React.FC = () => {
     target: [number, number, number];
   } | null>(null);
   const [viewTick, setViewTick] = useState(0);
+  const [cameraPreset, setCameraPreset] = useState<CameraState | null>(null);
+  const [cameraPresetTick, setCameraPresetTick] = useState(0);
   const [friction, setFriction] = useState(0.2);
   const [forceMode, setForceMode] = useState<ForceDisplayMode>(1);
   const [showInfo, setShowInfo] = useState(false);
@@ -41,6 +90,7 @@ const Escenario: React.FC = () => {
 
   const physicsRefs = useRef<Record<number, LiveData>>({});
   const meshRefs = useRef<Record<number, Mesh>>({});
+  const cameraStateRef = useRef<CameraState | null>(null);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -75,6 +125,8 @@ const Escenario: React.FC = () => {
       mass: 1,
       isMassless: true,
       kinematicMode: "position",
+      trailWidth: 1,
+      trailLength: 1,
       forces: [],
       events: [],
     };
@@ -110,6 +162,7 @@ const Escenario: React.FC = () => {
     setParts((prev) =>
       prev.map((p) => ({
         ...p,
+        color: p.color,
         t: 0,
         enSuelo: false,
         trail_three: [[p.p0_fis[1], p.p0_fis[2], p.p0_fis[0]]],
@@ -147,6 +200,14 @@ const Escenario: React.FC = () => {
     setParts((prev) =>
       prev.map((p) => {
         if (p.id === id) {
+          const updateKeys = Object.keys(data ?? {});
+          const resetExemptKeys = new Set(["events", "trailWidth", "trailLength"]);
+          const shouldReset = updateKeys.some((key) => !resetExemptKeys.has(key));
+
+          if (!shouldReset) {
+            return { ...p, ...data };
+          }
+
           const updated = { ...p, ...data, t: 0, enSuelo: false };
           physicsRefs.current[id] = {
             pos: updated.p0_fis,
@@ -185,6 +246,17 @@ const Escenario: React.FC = () => {
       const loadedForceMode = config.settings.forceMode;
       setForceMode(loadedForceMode === 0 || loadedForceMode === 1 || loadedForceMode === 2 ? loadedForceMode : 1);
       setShowInfo(config.settings.showInfo ?? false);
+      if (config.settings.camera) {
+        const cam = config.settings.camera;
+        if (cam.position && cam.target && typeof cam.fov === "number") {
+          setCameraPreset({
+            position: [cam.position[0], cam.position[1], cam.position[2]],
+            target: [cam.target[0], cam.target[1], cam.target[2]],
+            fov: cam.fov,
+          });
+          setCameraPresetTick((tick) => tick + 1);
+        }
+      }
     }
 
     // Cargar partículas
@@ -207,6 +279,8 @@ const Escenario: React.FC = () => {
           enSuelo: false,
           trail_three: [[p.p0_fis[1], p.p0_fis[2], p.p0_fis[0]]],
           kinematicMode: p.kinematicMode ?? "position",
+          trailWidth: p.trailWidth ?? 1,
+          trailLength: p.trailLength ?? 1,
         };
         
         physicsRefs.current[newId] = {
@@ -289,6 +363,7 @@ const Escenario: React.FC = () => {
         }}
         onResetCamera={() => setResetCamTick((n) => n + 1)}
         onViewPreset={handleViewPreset}
+        getCameraState={() => cameraStateRef.current}
         friction={friction}
         setFriction={setFriction}
         timeScale={timeScale}
@@ -325,6 +400,8 @@ const Escenario: React.FC = () => {
           viewTarget={viewPreset?.target ?? null}
           viewTick={viewTick}
         />
+        <CameraStateApplier preset={cameraPreset} tick={cameraPresetTick} />
+        <CameraStateSync stateRef={cameraStateRef} />
         <InfiniteGrid showGrid={showGrid} />
 
         <PhysicsUpdate

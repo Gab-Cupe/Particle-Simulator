@@ -1,90 +1,78 @@
 import { useEffect, useMemo } from "react";
-import { BufferAttribute, BufferGeometry, Color, ShaderMaterial } from "three";
+import { CatmullRomCurve3, Color, ShaderMaterial, TubeGeometry, Vector3 } from "three";
 
 type Vec3 = [number, number, number];
 
 interface TrailLineProps {
   points: Vec3[];
   color: string;
+  width?: number;
 }
 
-const TrailLine: React.FC<TrailLineProps> = ({ points, color }) => {
-  const { geometry, material } = useMemo(() => {
-    const geom = new BufferGeometry();
-    const mat = new ShaderMaterial({
+const BASE_RADIUS = 0.02;
+const RADIAL_SEGMENTS = 6;
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const TrailLine: React.FC<TrailLineProps> = ({ points, color, width = 1 }) => {
+  const material = useMemo(() => {
+    return new ShaderMaterial({
       transparent: true,
       depthWrite: false,
+      uniforms: {
+        uColor: { value: new Color(color) },
+        uOpacity: { value: 1.0 },
+      },
       vertexShader: `
-        attribute vec4 color;
-        varying vec4 vColor;
+        varying vec2 vUv;
+
         void main() {
-          vColor = color;
+          vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: `
-        varying vec4 vColor;
+        uniform vec3 uColor;
+        uniform float uOpacity;
+        varying vec2 vUv;
+
         void main() {
-          if (vColor.a < 0.01) discard;
-          gl_FragColor = vColor;
+          float alpha = pow(vUv.x, 1.6) * uOpacity;
+          if (alpha < 0.01) discard;
+          gl_FragColor = vec4(uColor, alpha);
         }
       `,
     });
-
-    return { geometry: geom, material: mat };
   }, []);
 
   useEffect(() => {
-    if (points.length < 2) return;
+    material.uniforms.uColor.value.set(color);
+  }, [color, material]);
 
-    const total = points.length;
-    const segments = total - 1;
-    const positions = new Float32Array(segments * 2 * 3);
-    const colors = new Float32Array(segments * 2 * 4);
-    const base = new Color(color);
-
-    for (let i = 0; i < segments; i++) {
-      const start = points[i];
-      const end = points[i + 1];
-      const t0 = i / (total - 1);
-      const t1 = (i + 1) / (total - 1);
-      const a0 = Math.pow(t0, 1.6);
-      const a1 = Math.pow(t1, 1.6);
-
-      const posIndex = i * 6;
-      positions[posIndex] = start[0];
-      positions[posIndex + 1] = start[1];
-      positions[posIndex + 2] = start[2];
-      positions[posIndex + 3] = end[0];
-      positions[posIndex + 4] = end[1];
-      positions[posIndex + 5] = end[2];
-
-      const colorIndex = i * 8;
-      colors[colorIndex] = base.r;
-      colors[colorIndex + 1] = base.g;
-      colors[colorIndex + 2] = base.b;
-      colors[colorIndex + 3] = a0;
-      colors[colorIndex + 4] = base.r;
-      colors[colorIndex + 5] = base.g;
-      colors[colorIndex + 6] = base.b;
-      colors[colorIndex + 7] = a1;
-    }
-
-    geometry.setAttribute("position", new BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new BufferAttribute(colors, 4));
-    geometry.computeBoundingSphere();
-  }, [color, geometry, points]);
+  const geometry = useMemo(() => {
+    if (points.length < 2) return null;
+    const curvePoints = points.map((p) => new Vector3(p[0], p[1], p[2]));
+    const curve = new CatmullRomCurve3(curvePoints, false, "catmullrom", 0.5);
+    const radius = BASE_RADIUS * clamp(width, 0.5, 2);
+    const tubularSegments = Math.max(2, points.length * 2);
+    return new TubeGeometry(curve, tubularSegments, radius, RADIAL_SEGMENTS, false);
+  }, [points, width]);
 
   useEffect(() => {
     return () => {
-      geometry.dispose();
       material.dispose();
     };
-  }, [geometry, material]);
+  }, [material]);
 
-  if (points.length < 2) return null;
+  useEffect(() => {
+    return () => {
+      geometry?.dispose();
+    };
+  }, [geometry]);
 
-  return <lineSegments geometry={geometry} material={material} />;
+  if (!geometry) return null;
+
+  return <mesh geometry={geometry} material={material} />;
 };
 
 export default TrailLine;

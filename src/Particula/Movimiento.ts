@@ -13,7 +13,6 @@ const mathFunctions = new Set(
 const allowedVariables = new Set(["t", "x", "y", "z"]);
 const identifierAliases: Record<string, string> = {
   pi: "PI",
-  "π": "PI",
   e: "E",
   ln: "log",
 };
@@ -30,7 +29,7 @@ export interface FormulaError {
 }
 
 const isDigit = (char: string) => char >= "0" && char <= "9";
-const isAlpha = (char: string) => /[a-zA-Z_π]/.test(char);
+const isAlpha = (char: string) => /[a-zA-Z_]/.test(char);
 
 const tokenizeFormula = (source: string): { tokens: FormulaToken[]; error?: FormulaError } => {
   const tokens: FormulaToken[] = [];
@@ -75,7 +74,7 @@ const tokenizeFormula = (source: string): { tokens: FormulaToken[]; error?: Form
       const start = i;
       let id = char;
       i += 1;
-      while (i < source.length && /[a-zA-Z0-9_π]/.test(source[i])) {
+      while (i < source.length && /[a-zA-Z0-9_]/.test(source[i])) {
         id += source[i];
         i += 1;
       }
@@ -250,6 +249,7 @@ export interface EventCondition {
   variable: 'x' | 'y' | 'z' | 't' | 'vx' | 'vy' | 'vz' | 'v';
   operator: '==' | '>' | '<' | '>=' | '<=' | '!=';
   value: number;
+  triggerMode?: 'once' | 'multi';
 }
 
 export interface EventAction {
@@ -284,6 +284,8 @@ export interface PData {
   mass: number;
   isMassless: boolean;
   kinematicMode?: 'position' | 'velocity' | 'acceleration';
+  trailWidth?: number;
+  trailLength?: number;
   forces: Force[];
   events: ParticleEvent[];
 }

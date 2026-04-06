@@ -7,13 +7,17 @@ interface ParticleEditorProps {
 }
 
 const VARIABLES = ['x', 'y', 'z', 't', 'vx', 'vy', 'vz', 'v'] as const;
-const OPERATORS = ['==', '>', '<', '>=', '<=', '!='] as const;
+const OPERATORS = ['>', '<', '>=', '<='] as const;
 const ACTION_TYPES = ['pause', 'changeColor'] as const;
+const TRIGGER_MODES = ['once', 'multi'] as const;
+const MULTI_TRIGGER_OPERATORS = new Set(['>', '<', '>=', '<=']);
 
 const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onClose }) => {
   const kinematicMode = sel.kinematicMode ?? "position";
   const showInitialPosition = !sel.isMassless || kinematicMode !== "position";
   const showInitialVelocity = !sel.isMassless || kinematicMode === "acceleration";
+  const trailWidth = sel.trailWidth ?? 1;
+  const trailLength = sel.trailLength ?? 1;
 
   const getR0FromFormula = (
     fx: string,
@@ -72,7 +76,7 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
     const newEvent: ParticleEvent = {
       id: Date.now(),
       name: `Event ${(sel.events?.length || 0) + 1}`,
-      conditions: [{ variable: 'z', operator: '<=', value: 0 }],
+      conditions: [{ variable: 'z', operator: '<=', value: 0, triggerMode: 'once' }],
       conditionLogic: 'AND',
       actions: [{ type: 'pause' }],
       triggered: false,
@@ -91,7 +95,7 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
   const addCondition = (eventId: number) => {
     const event = sel.events?.find(e => e.id === eventId);
     if (!event) return;
-    const newCondition: EventCondition = { variable: 'x', operator: '==', value: 0 };
+    const newCondition: EventCondition = { variable: 'x', operator: '>=', value: 0, triggerMode: 'once' };
     updateEvent(eventId, { conditions: [...event.conditions, newCondition] });
   };
 
@@ -399,6 +403,26 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
         onChange={(e) => onUpdatePart(sel.id, { color: e.target.value })}
       />
 
+      <label>Trail Width: {trailWidth.toFixed(1)}</label>
+      <input
+        type="range"
+        min="0.5"
+        max="4"
+        step="0.1"
+        value={trailWidth}
+        onChange={(e) => onUpdatePart(sel.id, { trailWidth: Number(e.target.value) })}
+      />
+
+      <label>Trail Length: {trailLength.toFixed(1)}</label>
+      <input
+        type="range"
+        min="0.5"
+        max="8"
+        step="0.1"
+        value={trailLength}
+        onChange={(e) => onUpdatePart(sel.id, { trailLength: Number(e.target.value) })}
+      />
+
       <hr style={{ margin: "15px 0", borderColor: "rgba(100,100,150,0.3)" }} />
 
       {/* SECCIÓN DE EVENTOS */}
@@ -406,88 +430,76 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
         Events ({sel.events?.length || 0})
       </label>
       <div
-        style={{
-          maxHeight: "250px",
-          overflowY: "auto",
-          marginBottom: "10px",
-        }}
+        className="event-list"
       >
         {(sel.events || []).map((event) => (
           <div
             key={event.id}
-            style={{
-              background: event.triggered
-                ? "rgba(40, 167, 69, 0.2)"
-                : "rgba(255,255,255,0.05)",
-              padding: "10px",
-              borderRadius: "6px",
-              marginBottom: "10px",
-              border: event.enabled
-                ? "1px solid rgba(255,193,7,0.5)"
-                : "1px solid rgba(100,100,100,0.3)",
-            }}
+            className={`event-card ${event.enabled ? "event-card-on" : "event-card-off"} ${event.triggered ? "event-card-triggered" : ""}`}
           >
             {/* Header del evento */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <div className="event-header">
               <input
                 type="text"
                 value={event.name}
                 onChange={(e) => updateEvent(event.id, { name: e.target.value })}
-                style={{ flex: 1, marginRight: "5px", fontSize: "12px" }}
+                className="event-title"
               />
-              <button
-                onClick={() => updateEvent(event.id, { enabled: !event.enabled })}
-                style={{
-                  width: "auto",
-                  padding: "2px 6px",
-                  fontSize: "10px",
-                  background: event.enabled ? "#28a745" : "#666",
-                  marginRight: "3px",
-                }}
-              >
-                {event.enabled ? "ON" : "OFF"}
-              </button>
-              <button
-                className="btn-delete"
-                style={{ width: "auto", padding: "2px 6px" }}
-                onClick={() => deleteEvent(event.id)}
-              >
-                X
-              </button>
+              <div className="event-header-actions">
+                <button
+                  onClick={() => updateEvent(event.id, { enabled: !event.enabled })}
+                  className={`event-toggle ${event.enabled ? "event-toggle-on" : "event-toggle-off"}`}
+                >
+                  {event.enabled ? "ON" : "OFF"}
+                </button>
+                <button
+                  className="event-delete"
+                  onClick={() => deleteEvent(event.id)}
+                >
+                  X
+                </button>
+              </div>
             </div>
 
             {event.triggered && (
-              <div style={{ fontSize: "10px", color: "#28a745", marginBottom: "5px" }}>
+              <div className="event-status">
                 ✓ Triggered
               </div>
             )}
 
             {/* Condiciones */}
-            <div style={{ marginBottom: "8px" }}>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: "4px" }}>
-                <span style={{ fontSize: "11px", color: "#b8d4f0" }}>Conditions:</span>
+            <div className="event-section">
+              <div className="event-section-header">
+                <span>Conditions</span>
                 <select
                   value={event.conditionLogic}
                   onChange={(e) => updateEvent(event.id, { conditionLogic: e.target.value as 'AND' | 'OR' })}
-                  style={{ marginLeft: "8px", fontSize: "10px", padding: "2px" }}
+                  className="event-logic"
                 >
                   <option value="AND">AND</option>
                   <option value="OR">OR</option>
                 </select>
               </div>
               {event.conditions.map((cond, ci) => (
-                <div key={ci} style={{ display: "flex", gap: "3px", marginBottom: "3px" }}>
+                <div key={ci} className="event-row">
                   <select
                     value={cond.variable}
                     onChange={(e) => updateCondition(event.id, ci, { variable: e.target.value as typeof VARIABLES[number] })}
-                    style={{ width: "50px", fontSize: "11px", padding: "2px" }}
+                    className="event-select"
                   >
                     {VARIABLES.map(v => <option key={v} value={v}>{v}</option>)}
                   </select>
                   <select
                     value={cond.operator}
-                    onChange={(e) => updateCondition(event.id, ci, { operator: e.target.value as typeof OPERATORS[number] })}
-                    style={{ width: "45px", fontSize: "11px", padding: "2px" }}
+                    onChange={(e) => {
+                      const op = e.target.value as typeof OPERATORS[number];
+                      const next: Partial<EventCondition> = { operator: op };
+                      if (MULTI_TRIGGER_OPERATORS.has(op) && !cond.triggerMode) {
+                        next.triggerMode = "once";
+                      }
+                      updateCondition(event.id, ci, next);
+                    }}
+                    className="event-select"
                   >
                     {OPERATORS.map(o => <option key={o} value={o}>{o}</option>)}
                   </select>
@@ -495,11 +507,28 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
                     type="number"
                     value={cond.value}
                     onChange={(e) => updateCondition(event.id, ci, { value: Number(e.target.value) })}
-                    style={{ width: "60px", fontSize: "11px", padding: "2px" }}
+                    className="event-input"
                   />
+                  {MULTI_TRIGGER_OPERATORS.has(cond.operator) && (
+                    <select
+                      value={cond.triggerMode ?? "once"}
+                      onChange={(e) =>
+                        updateCondition(event.id, ci, {
+                          triggerMode: e.target.value as typeof TRIGGER_MODES[number],
+                        })
+                      }
+                      className="event-select"
+                    >
+                      {TRIGGER_MODES.map((mode) => (
+                        <option key={mode} value={mode}>
+                          {mode === "once" ? "Once" : "Multi"}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                   <button
                     onClick={() => removeCondition(event.id, ci)}
-                    style={{ width: "20px", padding: "0", fontSize: "10px", background: "#dc3545" }}
+                    className="event-remove"
                   >
                     -
                   </button>
@@ -507,21 +536,21 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
               ))}
               <button
                 onClick={() => addCondition(event.id)}
-                style={{ width: "auto", padding: "2px 8px", fontSize: "10px", background: "#17a2b8", marginTop: "3px" }}
+                className="event-add"
               >
                 + Condition
               </button>
             </div>
 
             {/* Acciones */}
-            <div>
-              <span style={{ fontSize: "11px", color: "#b8d4f0", display: "block", marginBottom: "4px" }}>Actions:</span>
+            <div className="event-section">
+              <span className="event-section-title">Actions</span>
               {event.actions.map((action, ai) => (
-                <div key={ai} style={{ display: "flex", gap: "3px", marginBottom: "3px", alignItems: "center" }}>
+                <div key={ai} className="event-row">
                   <select
                     value={action.type}
                     onChange={(e) => updateAction(event.id, ai, { type: e.target.value as typeof ACTION_TYPES[number], payload: undefined })}
-                    style={{ width: "100px", fontSize: "11px", padding: "2px" }}
+                    className="event-select"
                   >
                     {ACTION_TYPES.map(t => (
                       <option key={t} value={t}>
@@ -534,12 +563,12 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
                       type="color"
                       value={action.payload || "#ff0000"}
                       onChange={(e) => updateAction(event.id, ai, { payload: e.target.value })}
-                      style={{ width: "40px", height: "22px", padding: "0" }}
+                      className="event-color"
                     />
                   )}
                   <button
                     onClick={() => removeAction(event.id, ai)}
-                    style={{ width: "20px", padding: "0", fontSize: "10px", background: "#dc3545" }}
+                    className="event-remove"
                   >
                     -
                   </button>
@@ -547,7 +576,7 @@ const ParticleEditor: React.FC<ParticleEditorProps> = ({ sel, onUpdatePart, onCl
               ))}
               <button
                 onClick={() => addAction(event.id)}
-                style={{ width: "auto", padding: "2px 8px", fontSize: "10px", background: "#17a2b8", marginTop: "3px" }}
+                className="event-add"
               >
                 + Action
               </button>

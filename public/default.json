@@ -1,21 +1,34 @@
 {
-  "version": "1.0",
-  "timestamp": "2026-04-06T01:34:41.998Z",
+  "version": "1.1",
+  "timestamp": "2026-04-06T13:58:22.497Z",
   "settings": {
     "gravity": true,
     "friction": 0,
     "path": true,
-    "timeScale": 2,
+    "timeScale": 1,
     "collisibleGround": false,
-    "showGrid": true,
+    "showGrid": false,
     "showParticles": true,
-    "particleRadius": 0.4,
+    "particleRadius": 0.7,
     "forceMode": 1,
-    "showInfo": false
+    "showInfo": true,
+    "camera": {
+      "position": [
+        64.44568901671789,
+        10.567718557010231,
+        -59.37312952875978
+      ],
+      "target": [
+        11.579568294861364,
+        -40.12341148153857,
+        -21.898703379224784
+      ],
+      "fov": 75
+    }
   },
   "particulas": [
     {
-      "id": 1775439190081.0999,
+      "id": 1775483860345.1858,
       "color": "#ff00ff",
       "mass": 5,
       "p0_fis": [
@@ -48,10 +61,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190408.4106,
+      "id": 1775483860327.301,
       "color": "#e600ff",
       "mass": 5,
       "p0_fis": [
@@ -84,10 +99,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190291.4321,
+      "id": 1775483860372.436,
       "color": "#cc00ff",
       "mass": 5,
       "p0_fis": [
@@ -120,10 +137,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190114.413,
+      "id": 1775483860513.1106,
       "color": "#b300ff",
       "mass": 5,
       "p0_fis": [
@@ -156,10 +175,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190658.9292,
+      "id": 1775483861241.2732,
       "color": "#9900ff",
       "mass": 5,
       "p0_fis": [
@@ -192,10 +213,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190151.7725,
+      "id": 1775483860346.9634,
       "color": "#8000ff",
       "mass": 5,
       "p0_fis": [
@@ -228,10 +251,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190444.3042,
+      "id": 1775483860604.4023,
       "color": "#6600ff",
       "mass": 5,
       "p0_fis": [
@@ -264,10 +289,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190011.9106,
+      "id": 1775483861012.4016,
       "color": "#4d00ff",
       "mass": 5,
       "p0_fis": [
@@ -300,10 +327,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190435.6592,
+      "id": 1775483860462.8645,
       "color": "#3300ff",
       "mass": 5,
       "p0_fis": [
@@ -336,10 +365,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190426.2625,
+      "id": 1775483860981.3818,
       "color": "#1a00ff",
       "mass": 5,
       "p0_fis": [
@@ -372,10 +403,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190291.9573,
+      "id": 1775483860468.3254,
       "color": "#0000ff",
       "mass": 5,
       "p0_fis": [
@@ -408,10 +441,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190383.8289,
+      "id": 1775483860448.455,
       "color": "#001aff",
       "mass": 5,
       "p0_fis": [
@@ -444,10 +479,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190593.697,
+      "id": 1775483860673.3386,
       "color": "#0033ff",
       "mass": 5,
       "p0_fis": [
@@ -480,10 +517,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190527.4324,
+      "id": 1775483860484.544,
       "color": "#004dff",
       "mass": 5,
       "p0_fis": [
@@ -516,10 +555,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190544.2654,
+      "id": 1775483860833.9456,
       "color": "#0066ff",
       "mass": 5,
       "p0_fis": [
@@ -552,10 +593,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190397.964,
+      "id": 1775483860555.4429,
       "color": "#0080ff",
       "mass": 5,
       "p0_fis": [
@@ -588,10 +631,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190229.4207,
+      "id": 1775483860876.3142,
       "color": "#0099ff",
       "mass": 5,
       "p0_fis": [
@@ -624,10 +669,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190654.9846,
+      "id": 1775483861034.5808,
       "color": "#00b3ff",
       "mass": 5,
       "p0_fis": [
@@ -660,10 +707,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190405.9143,
+      "id": 1775483860792.0713,
       "color": "#00ccff",
       "mass": 5,
       "p0_fis": [
@@ -696,10 +745,12 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     },
     {
-      "id": 1775439190362.0828,
+      "id": 1775483860715.5334,
       "color": "#00e5ff",
       "mass": 5,
       "p0_fis": [
@@ -732,7 +783,9 @@
         ]
       ],
       "kinematicMode": "position",
-      "events": []
+      "events": [],
+      "trailWidth": 2,
+      "trailLength": 4.5
     }
   ]
 }

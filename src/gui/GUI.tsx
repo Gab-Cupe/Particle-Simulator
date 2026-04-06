@@ -29,6 +29,11 @@ interface SavedConfig {
     particleRadius?: number;
     forceMode?: ForceDisplayMode;
     showInfo?: boolean;
+    camera?: {
+      position: [number, number, number];
+      target: [number, number, number];
+      fov: number;
+    };
   };
   particulas: PData[];
 }
@@ -43,6 +48,11 @@ interface GUIProps {
   onFocus: (part: PData) => void;
   onResetCamera: () => void;
   onViewPreset: (preset: "iso" | "+x" | "+y" | "+z" | "-x" | "-y" | "-z") => void;
+  getCameraState?: () => {
+    position: [number, number, number];
+    target: [number, number, number];
+    fov: number;
+  } | null;
   friction: number;
   setFriction: (v: number) => void;
   timeScale: number;
@@ -99,8 +109,9 @@ const GUI: React.FC<GUIProps> = (p) => {
 
   // Guardar configuración
   const handleSaveConfig = () => {
+    const cameraState = p.getCameraState?.() ?? undefined;
     const config: SavedConfig = {
-      version: "1.0",
+      version: "1.1",
       timestamp: new Date().toISOString(),
       settings: {
         gravity: p.gravity,
@@ -113,6 +124,7 @@ const GUI: React.FC<GUIProps> = (p) => {
         particleRadius: p.particleRadius,
         forceMode: p.forceMode,
         showInfo: p.showInfo,
+        camera: cameraState,
       },
       particulas: p.particulas,
     };

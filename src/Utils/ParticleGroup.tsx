@@ -66,7 +66,11 @@ const ParticleGroup: React.FC<ParticleGroupProps> = ({
       />
 
       {path && liveData.trail.length > 1 && (
-        <TrailLine points={liveData.trail} color={p.color} />
+        <TrailLine
+          points={liveData.trail}
+          color={p.color}
+          width={p.trailWidth ?? 1}
+        />
       )}
 
       <ForceVisualizer
